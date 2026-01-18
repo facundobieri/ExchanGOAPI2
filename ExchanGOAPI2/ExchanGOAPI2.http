@@ -1,0 +1,6 @@
+@ExchanGOAPI2_HostAddress = http://localhost:5265
+
+GET {{ExchanGOAPI2_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
