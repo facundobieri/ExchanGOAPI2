@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs
 {
-    public class UserCreateDTO
+    public class CreateUserRequest
     {
         [Required]
         [StringLength(100)]
