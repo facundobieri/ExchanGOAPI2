@@ -3,6 +3,7 @@
 ## General Guidelines
 - Use concise and actionable language in your comments and code.
 - Ensure that your code is well-structured and follows best practices.
+- Prefer inline mapping or have repositories return DTOs instead of using a separate mapping layer. However, if a mapping layer is necessary, implement it for mapping `CreateUserRequest <-> User` and `User -> UserDto`.
 
 ## Code Style
 - Follow consistent naming conventions for classes and interfaces.
