@@ -11,5 +11,7 @@ namespace Application.Interfaces
     {
         Task<UserDto> CreateUserAsync(CreateUserRequest request);
         Task<UserDto?> GetUserByIdAsync(int id);
+        Task<UserDto?> UpdateUserAsync(int id, UpdateUserRequest request);
+        Task<bool> DeleteUserAsync(int id);
     }
 }

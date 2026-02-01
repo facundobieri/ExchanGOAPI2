@@ -25,5 +25,12 @@ namespace Application.Mappings
             Role = user.Role.ToString(),
             TotalConversions = user.TotalConversions
         };
+        public static void UpdateEntity(this UpdateUserRequest req, User user)
+        {
+            if (!string.IsNullOrWhiteSpace(req.Email)) user.Email = req.Email;
+            if (!string.IsNullOrWhiteSpace(req.Password)) user.Password = req.Password; 
+            if (req.Subscription.HasValue) user.Subscription = req.Subscription.Value;
+            if (req.TotalConversions.HasValue) user.TotalConversions = req.TotalConversions.Value;
+        }
     }
 }
