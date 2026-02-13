@@ -1,7 +1,5 @@
 ﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Reflection.Emit;
 
 namespace Infrastructure.Persistence
 {
@@ -9,7 +7,7 @@ namespace Infrastructure.Persistence
     {
         public ExchanGODbContext(DbContextOptions<ExchanGODbContext> options) : base(options) { }
 
-        // Null-forgiving because EF inicializa DbSet en tiempo de ejecución
+        // Null-forgiving porque EF inicializa DbSet en tiempo de ejecución
         public DbSet<User> Users { get; set; } = null!;
         public DbSet<Currency> Currencies { get; set; } = null!;
 
@@ -27,7 +25,8 @@ namespace Infrastructure.Persistence
 
                 b.Property(u => u.Username).HasMaxLength(100).IsRequired();
                 b.Property(u => u.Email).IsRequired();
-                b.Property(u => u.Password).IsRequired();});
+                b.Property(u => u.Password).IsRequired();
+            });
 
             modelBuilder.Entity<Currency>(b =>
             {
@@ -42,3 +41,4 @@ namespace Infrastructure.Persistence
             });
         }
     }
+}
