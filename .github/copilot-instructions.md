@@ -15,3 +15,9 @@
 - When working with repositories, ensure that interfaces like `IBaseRepository`, `ICurrencyRepository`, and `IUserRepository` are implemented correctly.
 - Focus on the `User` entity in `Domain\Entities\User.cs` to ensure it adheres to the defined interfaces and business logic.
 - Do not use `CancellationToken` in repository or service method signatures.
+
+## Objetive
+- The user can create an account and log in
+- The system allows to CRUD currencies, but only admin users can create and delete currencies. Regular users can only read them.
+- The user without suscrpition can't create conversions, the free user can make up to 10 conversions, the trial can make up to 100 and the pro user can make unlimited conversions.
+- The conversion is made by the user selecting two currencies and the amount to convert, then the system will return the converted amount based on the current exchange rate.

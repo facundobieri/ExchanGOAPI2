@@ -5,6 +5,7 @@ using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,11 +18,19 @@ namespace Application.Services
 
         public async Task<UserDto> CreateUserAsync(CreateUserRequest request)
         {
+            // Validar duplicados
+            var existingUsername = await _userRepository.GetByUsernameAsync(request.Username);
+            if (existingUsername != null)
+                throw new InvalidOperationException("Username already exists.");
+
+            var existingEmail = await _userRepository.GetByEmailAsync(request.Email);
+            if (existingEmail != null)
+                throw new InvalidOperationException("Email already exists.");
+
             var user = request.ToEntity();
             await _userRepository.AddAsync(user);
             await _userRepository.SaveChangesAsync();
             return user.ToDto();
-
         }
 
         public async Task<UserDto?> GetUserByIdAsync(int id)
@@ -29,10 +38,23 @@ namespace Application.Services
             var user = await _userRepository.GetByIdAsync(id);
             return user?.ToDto();
         }
+        public async Task<UserDto?> GetUserByUsernameAsync(string username)
+        {
+            var user = await _userRepository.GetByUsernameAsync(username);
+            return user?.ToDto();
+        }
         public async Task<UserDto?> UpdateUserAsync(int id, UpdateUserRequest request)
         {
             var user = await _userRepository.GetByIdAsync(id);
             if (user == null) return null;
+
+            // Validar email duplicado (si se intenta cambiar)
+            if (!string.IsNullOrWhiteSpace(request.Email) && request.Email != user.Email)
+            {
+                var existingEmail = await _userRepository.GetByEmailAsync(request.Email);
+                if (existingEmail != null)
+                    throw new InvalidOperationException("Email already exists.");
+            }
 
             request.UpdateEntity(user);
             _userRepository.Update(user);
@@ -47,6 +69,31 @@ namespace Application.Services
             _userRepository.Delete(user);
             await _userRepository.SaveChangesAsync();
             return true;
+        }
+        public async Task<LoginResponse?> LoginAsync(LoginRequest request)
+        {
+            var user = await _userRepository.GetByUsernameAsync(request.Username);
+            if (user == null)
+                return null;
+
+            if (!VerifyPassword(request.Password, user.Password))
+                return null;
+
+            return new LoginResponse
+            {
+                User = user.ToDto(),
+                Token = null
+            };
+        }
+
+        public bool VerifyPassword(string inputPassword, string hashedPassword)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(inputPassword));
+                var inputHash = Convert.ToBase64String(bytes);
+                return inputHash == hashedPassword;
+            }
         }
     }
 }

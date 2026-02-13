@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
 namespace Application.DTOs
 {
@@ -14,5 +10,6 @@ namespace Application.DTOs
         public string Subscription { get; set; }
         public string Role { get; set; }
         public int TotalConversions { get; set; }
+        public string PasswordHash { get; set; }
     }
 }
