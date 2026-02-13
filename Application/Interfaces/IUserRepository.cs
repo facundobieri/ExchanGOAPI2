@@ -13,3 +13,4 @@ namespace Application.Interfaces
         Task<User?> GetByEmailAsync(string email);
     }
 }
+  
