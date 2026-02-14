@@ -76,24 +76,11 @@ namespace Application.Services
             if (user == null)
                 return null;
 
-            if (!VerifyPassword(request.Password, user.Password))
-                return null;
-
             return new LoginResponse
             {
                 User = user.ToDto(),
                 Token = null
             };
-        }
-
-        public bool VerifyPassword(string inputPassword, string hashedPassword)
-        {
-            using (var sha256 = SHA256.Create())
-            {
-                var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(inputPassword));
-                var inputHash = Convert.ToBase64String(bytes);
-                return inputHash == hashedPassword;
-            }
-        }
+        
     }
 }

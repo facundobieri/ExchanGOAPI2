@@ -15,6 +15,5 @@ namespace Application.Interfaces
         Task<UserDto?> UpdateUserAsync(int id, UpdateUserRequest request);
         Task<bool> DeleteUserAsync(int id);
         Task<LoginResponse?> LoginAsync(LoginRequest request);
-        bool VerifyPassword(string inputPassword, string hashedPassword);
     }
 }

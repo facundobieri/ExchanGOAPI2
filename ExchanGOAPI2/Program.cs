@@ -1,5 +1,8 @@
 using Application.Interfaces;
 using Application.Services;
+using Infrastructure.Persistence;
+using Infrastructure.Persistence.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +15,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ExchanGODbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+#region Injections
 // Repositories
 builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -21,6 +25,7 @@ builder.Services.AddScoped<ICurrencyRepository, CurrencyRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICurrencyService, CurrencyService>();
 builder.Services.AddScoped<IConversionService, ConversionService>();
+#endregion
 
 var app = builder.Build();
 
