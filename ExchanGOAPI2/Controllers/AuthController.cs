@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.DTOs.User;
 using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -13,13 +14,9 @@ namespace ExchanGOAPI2.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IUserService _userService;
-        private readonly IConfiguration _configuration;
 
-        public AuthController(IUserService userService, IConfiguration configuration)
-        {
+        public AuthController(IUserService userService) =>
             _userService = userService;
-            _configuration = configuration;
-        }
 
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(CreateUserRequest request)
@@ -27,7 +24,7 @@ namespace ExchanGOAPI2.Controllers
             try
             {
                 var user = await _userService.CreateUserAsync(request);
-                return CreatedAtAction(nameof(Register), new { id = user.Id }, user);
+                return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
             }
             catch (InvalidOperationException ex)
             {
@@ -35,40 +32,22 @@ namespace ExchanGOAPI2.Controllers
             }
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<UserDto>> GetUserById(int id)
+        {
+            var user = await _userService.GetUserByIdAsync(id);
+            if (user is null) return NotFound();
+            return Ok(user);
+        }
+
         [HttpPost("login")]
         public async Task<ActionResult<LoginResponse>> Login(LoginRequest request)
         {
             var loginResponse = await _userService.LoginAsync(request);
             if (loginResponse == null)
-                return Unauthorized(new { message = "Invalid username or password." });
+                return Unauthorized(new { message = "Invalid credentials." });
 
-            var token = GenerateJwtToken(loginResponse.User);
-            loginResponse.Token = token;
             return Ok(loginResponse);
-        }
-
-        private string GenerateJwtToken(UserDto user)
-        {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
-            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim("Subscription", user.Subscription),
-                new Claim(ClaimTypes.Role, user.Role)
-            };
-
-            var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
-                claims: claims,
-                expires: DateTime.UtcNow.AddHours(1),
-                signingCredentials: credentials);
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }

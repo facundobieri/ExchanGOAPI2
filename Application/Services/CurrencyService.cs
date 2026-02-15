@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.DTOs.Currency;
 using Application.Interfaces;
 using Application.Mappings;
 using Domain.Entities;

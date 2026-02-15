@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.DTOs.Currency;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
