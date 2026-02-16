@@ -37,7 +37,9 @@ namespace Infrastructure.Persistence
                 b.Property(c => c.Code).HasMaxLength(3).IsRequired();
                 b.Property(c => c.Legend).HasMaxLength(50).IsRequired();
                 b.Property(c => c.Symbol).HasMaxLength(3).IsRequired();
-                b.Property(c => c.ConvertibilityIndex).IsRequired();
+                b.Property(c => c.ConvertibilityIndex)
+                .HasPrecision(18, 6)
+                .IsRequired();
             });
         }
     }

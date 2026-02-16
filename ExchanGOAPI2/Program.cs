@@ -16,7 +16,7 @@ builder.Services.AddSwaggerGen();
 
 // Database
 builder.Services.AddDbContext<ExchanGODbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 #region Injections
 // Repositories
