@@ -39,6 +39,12 @@ namespace Application.Services
             return user.ToDto();
         }
 
+        public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
+        {
+            var users = await _userRepository.GetAllAsync();
+            return users.Select(u => u.ToDto());
+        }
+
         public async Task<UserDto?> GetUserByIdAsync(int id)
         {
             var user = await _userRepository.GetByIdAsync(id);
