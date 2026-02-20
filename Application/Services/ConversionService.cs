@@ -31,15 +31,18 @@ namespace Application.Services
             if (user.Subscription == UserSubscription.Estandar && user.TotalConversions <= 0)
                 throw new InvalidOperationException("Trial user has reached conversion limit (100).");
 
-            // Obtener divisas
-            var sourceCurrency = await _currencyRepository.GetByIdAsync(request.SourceCurrencyId);
-            var targetCurrency = await _currencyRepository.GetByIdAsync(request.TargetCurrencyId);
+            // Obtener divisas por code
+            var sourceCurrency = await _currencyRepository.GetByCodeAsync(request.SourceCurrencyCode);
+            var targetCurrency = await _currencyRepository.GetByCodeAsync(request.TargetCurrencyCode);
 
-            if (sourceCurrency == null || targetCurrency == null)
-                throw new ArgumentException("Invalid currency.");
+            if (sourceCurrency == null)
+                throw new ArgumentException($"Currency '{request.SourceCurrencyCode}' not found.");
+
+            if (targetCurrency == null)
+                throw new ArgumentException($"Currency '{request.TargetCurrencyCode}' not found.");
 
             // Calcular conversión usando ConvertibilityIndex
-            var exchangeRate = targetCurrency.ConvertibilityIndex / sourceCurrency.ConvertibilityIndex;
+            var exchangeRate = sourceCurrency.ConvertibilityIndex / targetCurrency.ConvertibilityIndex;
             var convertedAmount = request.Amount * exchangeRate;
 
             // Decrementar conversiones disponibles (excepto Pro)
