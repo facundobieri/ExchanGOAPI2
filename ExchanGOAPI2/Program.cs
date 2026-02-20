@@ -77,10 +77,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
+else
+{
+    app.UseHttpsRedirection(); // Solo en producción
+}
 
 app.UseCors("AngularApp");
+
+
 app.UseAuthentication();
 app.UseAuthorization();
 

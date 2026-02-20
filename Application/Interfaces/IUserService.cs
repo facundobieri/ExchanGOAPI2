@@ -15,6 +15,7 @@ namespace Application.Interfaces
         Task<UserDto?> GetUserByIdAsync(int id);
         Task<UserDto?> GetUserByUsernameAsync(string username);
         Task<UserDto?> UpdateUserAsync(int id, UpdateUserRequest request);
+        Task<UserDto?> ChangeSubscriptionAsync(int id, ChangeSubscriptionRequest request);
         Task<bool> DeleteUserAsync(int id);
         Task<LoginResponse?> LoginAsync(LoginRequest request);
     }

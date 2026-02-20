@@ -3,6 +3,7 @@ using Application.DTOs.User;
 using Application.Interfaces;
 using Application.Mappings;
 using Domain.Entities;
+using Domain.Enum;
 using System.Threading.Tasks;
 
 namespace Application.Services
@@ -70,6 +71,25 @@ namespace Application.Services
             }
 
             request.UpdateEntity(user, _passwordHasher);
+            _userRepository.Update(user);
+            await _userRepository.SaveChangesAsync();
+            return user.ToDto();
+        }
+
+        public async Task<UserDto?> ChangeSubscriptionAsync(int id, ChangeSubscriptionRequest request)
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+            if (user == null) return null;
+
+            user.Subscription = request.NewSubscription;
+            user.TotalConversions = request.NewSubscription switch
+            {
+                UserSubscription.Free => 10,
+                UserSubscription.Estandar => 100,
+                UserSubscription.Pro => -1,
+                _ => 0
+            };
+
             _userRepository.Update(user);
             await _userRepository.SaveChangesAsync();
             return user.ToDto();

@@ -11,8 +11,7 @@ namespace ExchanGOAPI2.Controllers
     {
         private readonly IUserService _userService;
 
-        public AuthController(IUserService userService) =>
-            _userService = userService;
+        public AuthController(IUserService userService) => _userService = userService;
 
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(CreateUserRequest request)
@@ -20,20 +19,12 @@ namespace ExchanGOAPI2.Controllers
             try
             {
                 var user = await _userService.CreateUserAsync(request);
-                return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
+                return CreatedAtAction(nameof(Register), new { id = user.Id }, user);
             }
             catch (InvalidOperationException ex)
             {
                 return BadRequest(new { message = ex.Message });
             }
-        }
-
-        [HttpGet("{id}")]
-        public async Task<ActionResult<UserDto>> GetUserById(int id)
-        {
-            var user = await _userService.GetUserByIdAsync(id);
-            if (user is null) return NotFound();
-            return Ok(user);
         }
 
         [HttpPost("login")]
